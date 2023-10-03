@@ -39,18 +39,28 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
-        if s.is_empty() {
-            return Person.default();
+        let mut input = s.to_string();
+        if input.is_empty() {
+            return Person::default();
         }
 
-        let mut split_pos = 0;
-        for (i, c) in s.chars().enumerate() {
-            if c == ',' {
-                split_pos = i;
-            }
+        let comma_offset = input.find(',').unwrap();
+
+        let age = input
+            .drain(..comma_offset)
+            .collect::<String>()
+            .parse::<usize>()
+            .unwrap_or_default();
+        input.remove(comma_offset);
+
+        if input.is_empty() {
+            return Person::default();
         }
 
-        let name = s.split_from();
+        Person {
+            name: input,
+            age: age,
+        }
     }
 }
 

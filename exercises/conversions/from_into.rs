@@ -39,6 +39,18 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.is_empty() {
+            return Person.default();
+        }
+
+        let mut split_pos = 0;
+        for (i, c) in s.chars().enumerate() {
+            if c == ',' {
+                split_pos = i;
+            }
+        }
+
+        let name = s.split_from();
     }
 }
 

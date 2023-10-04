@@ -25,40 +25,41 @@ impl Default for Person {
 // Please note that you'll need to parse the age component into a `usize`
 // with something like `"4".parse::<usize>()`. The outcome of this needs to
 // be handled appropriately.
-//
-// Steps:
-// 1. If the length of the provided string is 0, then return the default of Person
-// 2. Split the given string on the commas present in it
-// 3. Extract the first element from the split operation and use it as the name
-// 4. If the name is empty, then return the default of Person
-// 5. Extract the other element from the split operation and parse it into a `usize` as the age
+
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
-        let mut input = s.to_string();
-        if input.is_empty() {
+        // 1. If the length of the provided string is 0, then return the default of Person
+        if s.is_empty() {
             return Person::default();
         }
 
-        let comma_offset = input.find(',').unwrap();
+        // 2. Split the given string on the commas present in it
+        let words: Vec<&str> = s.split(',').collect();
 
-        let age = input
-            .drain(..comma_offset)
-            .collect::<String>()
-            .parse::<usize>()
-            .unwrap_or_default();
-        input.remove(comma_offset);
-
-        if input.is_empty() {
+        if words.len() != 2 {
             return Person::default();
         }
+        // 3. Extract the first element from the split operation and use it as the name
+        let name = words[0];
+
+        // 4. If the name is empty, then return the default of Person
+        if name.is_empty() {
+            return Person::default();
+        }
+
+        // 5. Extract the other element from the split operation and parse it into a `usize` as the age
+        let age: usize = match words[1].trim().parse::<usize>() {
+            Ok(num) => num,
+            _ => {
+                return Person::default();
+            }
+        };
 
         Person {
-            name: input,
+            name: name.to_string(),
             age: age,
         }
     }
